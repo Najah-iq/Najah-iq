@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جمهورية العراق - وزارة التربية</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 10px;
+            direction: rtl;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+        }
+        .form-group { margin-bottom: 15px; text-align: right; }
+        label { display: block; margin-bottom: 5px; color: #333; font-weight: bold; font-size: 14px; }
+        input {
+            width: 100%; padding: 12px; border: 1px solid #ccc;
+            border-radius: 8px; box-sizing: border-box; font-size: 16px;
+        }
+        .btn-submit {
+            width: 100%; padding: 12px; background-color: #27ae60;
+            border: none; color: white; font-size: 16px; font-weight: bold;
+            border-radius: 8px; cursor: pointer; margin-top: 10px;
+        }
+        
+        .result-page {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .header-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .iraq-official-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin: 0 auto 10px auto;
+            display: block;
+        }
+        .header-section h2 {
+            margin: 3px 0;
+            font-size: 18px;
+            color: #222;
+        }
+        .header-section h3 {
+            margin: 3px 0;
+            font-size: 16px;
+            color: #555;
+        }
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        @media(min-width: 768px) {
+            .main-content { flex-direction: row-reverse; align-items: start; }
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #f0f0f0;
+            font-size: 15px;
+        }
+        .info-label { color: #777; font-weight: 500; }
+        .info-value { color: #111; font-weight: bold; }
+        
+        .alert-box {
+            background-color: #fce8e6;
+            color: #a83232;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border: 1px solid #f9d5d2;
+        }
+        
+        .table-title { font-weight: bold; color: #333; margin-bottom: 10px; }
+        
+        .grades-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .grades-table th, .grades-table td {
+            padding: 10px;
+            text-align: right;
+            font-size: 14px;
+            color: #000000; /* الأسماء تظل باللون الأسود دائماً */
+        }
+        .grades-table th {
+            color: #555;
+            border-bottom: 2px solid #ddd;
+        }
+        .grades-table td {
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .grade-val { font-weight: bold; text-align: left; }
+        
+        /* تلوين الهايلايتر (الخلفية الحمراء الخفيفة) للمواد المؤجلة فقط */
+        .row-moajal {
+            background-color: #fff5f5 !important;
+        }
+        
+        /* تلوين حرف الميم فقط باللون الأحمر */
+        .moajal-mark {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .badge-fail {
+            background-color: #fce8e6;
+            color: #e74c3c;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .btn-logout {
+            width: 100%;
+            background: none;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 6px;
+            color: #555;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .footer-text {
+            text-align: center;
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 20px;
+        }
+        .error-msg { color: red; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="login-container" id="login-box">
+    <h2 style="font-size: 18px; margin-bottom: 20px;">وزارة التربية - فحص النتائج</h2>
+    <div class="form-group">
+        <label>الرقم الامتحاني:</label>
+        <input type="text" id="exam-id" placeholder="أدخل الرقم الامتحاني">
+    </div>
+    <div class="form-group">
+        <label>الرقم السري:</label>
+        <input type="password" id="password" placeholder="أدخل الرقم السري">
+    </div>
+    <button class="btn-submit" onclick="verifyLogin()">تسجيل الدخول</button>
+    <div class="error-msg" id="error-text">الرقم الامتحاني أو السري غير صحيح!</div>
+</div>
+
+<div class="result-page" id="result-page">
+    <div class="header-section">
+        <img class="iraq-official-logo" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Seal_of_the_Ministry_of_Education_%28Iraq%29.svg" alt="وزارة التربية العراقية">
+        
+        <h2>جمهورية العراق</h2>
+        <h3>وزارة التربية</h3>
+        <h2 style="margin-top: 15px; font-weight: bold;">اللجنة الدائمة للامتحانات العامة<br>لعام 2026/2025</h2>
+    </div>
+
+    <div class="main-content">
+        <div class="card">
+            <div class="info-row">
+                <span class="info-label">الاسم الرباعي</span>
+                <span class="info-value">سجاد رعد قاسم والي</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">اسم المدرسة</span>
+                <span class="info-value">اعدادية الجمهورية للبنين</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">المديرية</span>
+                <span class="info-value">البصرة</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">الفرع</span>
+                <span class="info-value">علمي</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">الدور</span>
+                <span class="info-value">الأول</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">المجموع</span>
+                <span class="info-value">0</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">المعدل</span>
+                <span class="info-value">0%</span>
+            </div>
+            <div class="info-row" style="border: none;">
+                <span class="info-label">النتيجة النهائية</span>
+                <span class="info-value"><span class="badge-fail">معيد</span></span>
+            </div>
+            
+            <button class="btn-logout" onclick="location.reload()">تسجيل الخروج ↪</button>
+        </div>
+
+        <div class="card">
+            <div class="table-title">معلومات النتيجة</div>
+            <div class="alert-box">
+                ملاحظة: هذه النتيجة لا تُعد وثيقة رسمية، ويجب الاعتماد على الوثائق الورقية الصادرة من الوزارة.
+            </div>
+            
+            <table class="grades-table">
+                <thead>
+                    <tr>
+                        <th>المادة</th>
+                        <th style="text-align: left;">الدرجة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>الإسلامية</td><td class="grade-val">100</td></tr>
+                    <tr class="row-moajal"><td>العربية</td><td class="grade-val"><span class="moajal-mark">م</span></td></tr>
+                    <tr><td>الانكليزية</td><td class="grade-val">92</td></tr>
+                    <tr class="row-moajal"><td>الأحياء</td><td class="grade-val"><span class="moajal-mark">م</span></td></tr>
+                    <tr class="row-moajal"><td>الرياضيات</td><td class="grade-val"><span class="moajal-mark">م</span></td></tr>
+                    <tr><td>الكيمياء</td><td class="grade-val">91</td></tr>
+                    <tr class="row-moajal"><td>الفيزياء</td><td class="grade-val"><span class="moajal-mark">م</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="footer-text">جميع الحقوق محفوظة © 2026 وزارة التربية العراقية</div>
+</div>
+
+<script>
+function verifyLogin() {
+    const idInput = document.getElementById('exam-id').value;
+    const passInput = document.getElementById('password').value;
+    
+    const myExamId = "162611510080035";
+    const myPassword = "4023";
+    
+    if(idInput === myExamId && passInput === myPassword) {
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('result-page').style.display = 'block';
+    } else {
+        document.getElementById('error-text').style.display = 'block';
+    }
+}
+</script>
+
+</body>
+</html>
